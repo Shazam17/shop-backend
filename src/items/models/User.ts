@@ -10,4 +10,10 @@ export class User extends BaseEntity {
 
   @Column()
   password: string;
+
+  @Column({ default: null, nullable: true })
+  firstName: string;
+
+  @Column({ default: null, nullable: true })
+  lastName: string;
 }

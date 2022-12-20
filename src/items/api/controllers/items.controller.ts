@@ -7,10 +7,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { AddToCartDto } from '../dto/add-to-cart-dto';
 import { CreateCommentDto } from '../dto/create-comment-dto';
-import { CreateItemDto } from '../dto/create-item-dto';
-import { RegisterDto } from '../dto/register-dto';
 import { ItemsService } from '../../services/items.service';
 import { GetItemsDto } from '../dto/get-items-dto';
 import { UserService } from '../../services/user.service';
@@ -48,5 +45,20 @@ export class ItemsController {
   @Delete('comments/:id')
   async deleteComment(@Param('id') commentId: string) {
     this.itemsService.deleteComment(commentId);
+  }
+
+  @Get('orders/:id')
+  getUserOrders(@Param('id') userId: number) {
+    return this.itemsService.getUserOrders(userId);
+  }
+
+  @Put('order/:id')
+  async createOrder(@Param('id') userId: number, @Body() body: { destination: string }) {
+    await this.itemsService.createOrder(userId, body.destination);
+  }
+
+  @Delete('order/:orderId')
+  async deleteOrder(@Param('orderId') orderId: number) {
+    await this.itemsService.deleteOrder(orderId);
   }
 }

@@ -8,6 +8,7 @@ import { CartItem } from '../models/CartItem';
 import { Item } from '../models/Item';
 import { User } from '../models/User';
 import { Comment as CommentModel } from '../models/Comment';
+import { Order, OrderItem } from '../models/Order';
 
 @Injectable()
 export class ItemRepository {
@@ -82,6 +83,11 @@ export class ItemRepository {
     );
 
     return { items, totalPrice };
+  }
+
+  async deleteUserCart(userId: number) {
+    const cartItems = await CartItem.findBy({ userId });
+    await Promise.all(cartItems.map(async (item) => await item.softRemove()));
   }
 
   getItemById(id: string) {
@@ -162,5 +168,30 @@ export class ItemRepository {
       itemId,
       userId,
     });
+  }
+
+  async createOrderFromCart(
+    userId: number,
+    cartItems: object[],
+    destination: string = '',
+  ) {
+    const order = new Order();
+    order.name = 'Новый заказ №' + Math.floor(Math.random() * 1000);
+    order.createdByUser = userId;
+    order.items = cartItems.map(
+      // @ts-ignore
+      (item) => new OrderItem(item.amount, item.item.title, item.item.price),
+    );
+    order.description = destination;
+    await order.save();
+  }
+
+  getUserOrders(userId: number) {
+    return Order.findBy({ createdByUser: userId });
+  }
+
+  async deleteOrder(orderId: number) {
+    const order = await Order.findOneBy({ id: orderId });
+    await order.softRemove();
   }
 }

@@ -27,7 +27,7 @@ export class ItemsService {
     return this.itemsRepository.getCommentByItemId(parseInt(itemId));
   }
   addToCart(addToCartDto: AddToCartDto) {
-    this.itemsRepository.addToCart(addToCartDto);
+    return this.itemsRepository.addToCart(addToCartDto);
   }
   getUserCart(userId: number) {
     return this.itemsRepository.getUserCartById(userId);
@@ -60,10 +60,10 @@ export class ItemsService {
           item.id,
           parseInt(getItemsDto.userId),
         );
-      console.log(cartItem)
+        console.log(cartItem);
         return {
           ...item,
-          ordered: cartItem ? cartItem.amount : null
+          ordered: cartItem ? cartItem.amount : null,
         };
       }),
     );
@@ -81,5 +81,27 @@ export class ItemsService {
     category: string,
   ) {
     this.itemsRepository.searchItems(title, priceFrom, priceTo, category);
+  }
+
+  async createOrder(userId: number, destination: string) {
+    const cartItems = await this.itemsRepository.getUserCartById(userId);
+    if (cartItems.items.length === 0) {
+      throw new Error('no items to form order');
+    }
+    // @ts-ignore
+    await this.itemsRepository.createOrderFromCart(
+      userId,
+      cartItems.items,
+      destination,
+    );
+    await this.itemsRepository.deleteUserCart(userId);
+  }
+
+  getUserOrders(userId: number) {
+    return this.itemsRepository.getUserOrders(userId);
+  }
+
+  async deleteOrder(orderId: number) {
+    await this.itemsRepository.deleteOrder(orderId);
   }
 }

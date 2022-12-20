@@ -13,7 +13,6 @@ export class UserService {
 
   async loginUser(loginDto: RegisterDto) {
     const user = await this.itemsRepository.getUserByCredentials(loginDto);
-    console.log(user);
     if (user) {
       return { success: true, userId: user.id };
     } else {
@@ -28,6 +27,7 @@ export class UserService {
     password: string,
   ) {
     const user = await this.itemsRepository.getUserById(parseInt(userId));
+    console.log(user)
     if (user) {
       if (firstName) user.firstName = firstName;
       if (lastName) user.lastName = lastName;

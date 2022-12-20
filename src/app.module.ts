@@ -12,7 +12,8 @@ import { Item } from './items/models/Item';
 import { CartItem } from './items/models/CartItem';
 import { Comment } from './items/models/Comment';
 import { UserService } from './items/services/user.service';
-import { UsersController } from "./items/api/controllers/users.controller";
+import { UsersController } from './items/api/controllers/users.controller';
+import { Order } from './items/models/Order';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { UsersController } from "./items/api/controllers/users.controller";
       username: 'db_user',
       password: 'db_user_pass',
       database: 'app_db',
-      entities: [User, Item, CartItem, Comment],
+      entities: [User, Item, CartItem, Comment, Order],
       synchronize: true,
     }),
     ItemsModule,

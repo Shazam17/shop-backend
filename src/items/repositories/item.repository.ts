@@ -109,6 +109,7 @@ export class ItemRepository {
     return this.itemRepository.find({
       where: {
         ...nameFilter,
+        ...categoryFilter
       },
     });
   }
